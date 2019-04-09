@@ -1,0 +1,21 @@
+version: '2.2'
+services:
+  postgres:
+    image: "postgres:10.4-alpine"
+    volumes:
+      - ./docker/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
+  test-assignment:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - JDBC_URL=jdbc:postgresql://postgres:5432/test_assignment
+      - JDBC_USERNAME=postgres
+      - JDBC_PASSWORD=root
+    depends_on:
+      - postgres

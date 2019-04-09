@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактор</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/newsList.css}">
+    <script type="text/javascript" th:src="@{http://localhost:8080/webjars/jquery/3.2.1/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{http://localhost:8080/webjars/bootstrap/4.1.1/js/bootstrap.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a href="/" class="navbar-brand">Новости</a>
+    <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <form class="form-inline ml-auto" action="/search" th:object="${search}" method="post">
+        <div class="md-form my-0">
+            <input class="form-control" type="text" th:field="*{searchQuery}" placeholder="поиск" aria-label="Search">
+        </div>
+        <button class="btn btn-outline-white btn-md my-0 ml-sm-2" type="submit">Поиск</button>
+    </form>
+    <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav ml-auto">
+            <th:block th:each="category : ${categoryList}">
+                <li>
+                    <a class="nav-link" th:href="'/categories/' + ${category.getName()}" th:text="${category.getName()}"></a>
+                </li>
+            </th:block>
+            <li>
+                <a class="nav-link" th:href="@{/editor}">создать новость</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<form th:object="${news}" method="post">
+    <div class="form-group">
+        <label for="titleForm">Заголовок</label>
+        <input type="text" class="form-control" id="titleForm" placeholder="Заголовок" th:field="*{title}">
+    </div>
+    <div class="form-group">
+        <label for="textArea">Содержание</label>
+        <textarea class="form-control" id="textArea" rows="5" th:field="*{content}" th:text="${news.getContent()}"></textarea>
+    </div>
+    <div>
+        <th:block th:each="category, status : ${news.getCategoryList()}">
+            <div class="custom-control custom-checkbox">
+                <span class="mx-auto">
+                    <input class="custom-control-input" type="checkbox"
+                       th:checked="${category.checked}" th:field="*{categoryList[__${status.index}__].checked}"
+                       th:id="${category.getId()}">
+                    <input type="hidden" th:field="*{categoryList[__${status.index}__].id}"
+                   th:value="${news.categoryList[__${status.index}__].id}">
+                    <input type="hidden" th:field="*{categoryList[__${status.index}__].name}"
+                   th:value="${news.categoryList[__${status.index}__].name}">
+                    <label class="custom-control-label" th:for="${category.getId()}" th:text="${category.getName()}"></label>
+                </span>
+            </div>
+        </th:block>
+    </div>
+    <button href="/editor" class="btn btn-outline-white btn-md my-0 ml-sm-2" type="submit">Сохранить</button>
+</form>
+</body>
+</html>

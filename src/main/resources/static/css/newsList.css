@@ -1,0 +1,15 @@
+.news {
+    background-color: #daecda;
+    border-color: darkred;
+    border-style: solid;
+    border-width: thin;
+    border-radius: 10px;
+}
+.h1, h1 {
+    font-size: 1.4em;
+    font-family: serif;
+}
+
+.ed-button {
+    padding: 0px 0px 0px 0px;
+}

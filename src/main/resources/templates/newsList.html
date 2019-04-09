@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Новости</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.1.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/newsList.css}">
+    <script type="text/javascript" th:src="@{http://localhost:8080/webjars/jquery/3.2.1/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{http://localhost:8080/webjars/bootstrap/4.1.1/js/bootstrap.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a href="/" class="navbar-brand">Новости</a>
+    <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <form class="form-inline ml-auto" action="/search" th:object="${search}" method="post">
+        <div class="md-form my-0">
+            <input class="form-control" type="text" th:field="*{searchQuery}" placeholder="поиск" aria-label="Search">
+        </div>
+        <button class="btn btn-outline-white btn-md my-0 ml-sm-2" type="submit">Поиск</button>
+    </form>
+    <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav ml-auto">
+            <th:block th:each="category : ${categoryList}">
+                <li>
+                    <a class="nav-link" th:href="'/categories/' + ${category.getName()}" th:text="${category.getName()}"></a>
+                </li>
+            </th:block>
+            <li>
+                <a class="nav-link" th:href="@{/editor}">создать новость</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <div class="col-md-12">
+        <th:block th:each="news : ${newsList}">
+            <div class="border border-dark">
+                <div>
+                    <div>
+                        <a role="button" th:href="'/editor/' + ${news.getId()}" class="float-right"><img alt="edit" src="/img/edit-icon.png"></a>
+                    </div>
+                    <form method="post" th:action="'/delete/' + ${news.getId()}">
+                        <button class="float-right ed-button" type="submit"><img alt="delete" src="/img/delete-icon.png"></button>
+                    </form>
+                </div>
+                <h1 th:text="${news.getTitle()}"></h1>
+                <p th:text="${news.getContent()}"></p>
+                <span class="badge badge-info" th:text="${news.getPublicationDate()}"></span>
+                <div class="float-right">
+                    <th:block th:each="category : ${news.getCategoryList()}">
+                        <a th:href="'/categories/' + ${category.getName()}" >
+                            <span class="badge badge-pill badge-primary" th:text="${category.getName()}"></span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+</body>
+</html>
